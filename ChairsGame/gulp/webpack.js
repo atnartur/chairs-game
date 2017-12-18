@@ -31,6 +31,7 @@ if (env !== 'development') {
 let rootDir = path.resolve(__dirname, '../src');
 
 let jsIncludes = [
+    rootDir
     // path.resolve(__dirname, '../node_modules/handlebars')
 ];
 let resolveRoot = [rootDir];
@@ -53,11 +54,6 @@ const runner = webpack({
     resolve: {
         root: resolveRoot
     },
-    externals: {
-        // require("jquery") is external and available
-        //  on the global var jQuery
-        'jquery': 'jQuery'
-    },
     plugins: plugins,
     module: {
         loaders: [
@@ -70,11 +66,11 @@ const runner = webpack({
             //     loader: 'raw',
             //     include: htmlIncludes
             // },
-            // {
-            //     test: /\.less$/,
-            //     loader: 'style-loader!css-loader!less-loader',
-            //     include: jsIncludes
-            // },
+            {
+                test: /\.less$/,
+                loader: 'style-loader!css-loader!less-loader',
+                include: jsIncludes
+            },
             // {
             //     test: /\.json$/,
             //     loader: 'json-loader'

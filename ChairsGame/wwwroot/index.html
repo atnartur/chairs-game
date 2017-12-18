@@ -3,48 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dist/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="styles/justified-nav.css" rel="stylesheet">
+    <script src="https://vk.com/js/api/openapi.js?151" type="text/javascript"></script>
 </head>
 <body>
     <div id="app"></div>
     <div class="container">
         <main role="main">
-
             <!-- Jumbotron -->
-            <div class="jumbotron">
+            <div class="jumbotron" id="login">
                 <h1>Стулья</h1>
                 <p class="lead">Легендарная игра теперь онлайн!</p>
                 <p><button class="btn btn-lg btn-success" role="button">Вход через ВК</button></p>
             </div>
-
-            <!-- Example row of columns -->
-            <div class="row">
-                <div class="col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+            
+            <div id="game" style="display: none">
+                <div class="col-md-9" id="field">
+                    
                 </div>
-                <div class="col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
-                </div>
-                <div class="col-lg-4">
-                    <h2>Heading</h2>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-                    <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
+                <div class="col-md-3" id="chat">
+                    <form action="" method="post" class="panel panel-default">
+                        <div class="panel-body" id="messages"></div>
+                        <div class="input-group panel-footer">
+                            <input type="text" class="form-control" placeholder="Сообщение">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary">Отправить</button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
             </div>
-
         </main>
 
         <!-- Site footer -->
-        <footer class="footer">
-            <p>&copy; 2017 <a href="http://i.atnartur.ru">Артур Атнагулов</a></p>
+        <footer class="footer" style="text-align: center">
+            <p>&copy; 2017 <a href="http://i.atnartur.ru">Артур Атнагулов</a> & Данила Бутин</p>
         </footer>
 
     </div> <!-- /container -->
+    <script src="dist/vendor.min.js"></script>
+    <script src="dist/main.min.js"></script>
 </body>
 </html>
