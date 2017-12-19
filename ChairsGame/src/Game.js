@@ -2,6 +2,7 @@ import MK from 'matreshka';
 import Preview from './Preview';
 import Messages from './Messages/Collection';
 import Ws from './Ws';
+import Chairs from './Chairs/Collection'
 
 export default class Game extends MK.Object {
     constructor() {
@@ -26,7 +27,8 @@ export default class Game extends MK.Object {
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
             .instantiate('preview', Preview)
             .instantiate('messages', Messages)
-            .instantiate('ws', Ws);
+            .instantiate('ws', Ws)
+            .instantiate('chairs', Chairs);
         console.log('game', this);
     }
     init(session) {
@@ -35,5 +37,7 @@ export default class Game extends MK.Object {
     }
     start() {
         this.preview.hide();
+        this.chairs.show();
+        this.chairs.setPositions(5);
     }
 }
