@@ -8,8 +8,11 @@ $(document).ready(() => {
     const game = new Game();
     
     login.on('auth', res => {
-        login.hide();
-        game.init(res.session);
+        login.buttonText = 'Получение информации о пользователе...'; 
+        VK.api('users.get', {ids: res.uid}, userinfo => {
+            login.hide();
+            game.init({...res, ...userinfo.response[0]});
+        })
     })
 });
 
