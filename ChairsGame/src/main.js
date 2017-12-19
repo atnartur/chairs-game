@@ -9,7 +9,7 @@ $(document).ready(() => {
     
     login.on('auth', res => {
         login.hide();
-        game.start(res.session);
+        game.init(res.session);
     })
 });
 

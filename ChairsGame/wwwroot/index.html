@@ -19,20 +19,37 @@
                 <p><button class="btn btn-lg btn-success" role="button">Вход через ВК</button></p>
             </div>
             
-            <div id="game" style="display: none">
-                <div class="col-md-9" id="field">
-                    
-                </div>
-                <div class="col-md-3" id="chat">
-                    <form action="" method="post" class="panel panel-default">
-                        <div class="panel-body" id="messages"></div>
-                        <div class="input-group panel-footer">
-                            <input type="text" class="form-control" placeholder="Сообщение">
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary">Отправить</button>
-                            </span>
+            <div id="game" class="row" style="display: none">
+                <div class="col-9" id="field">
+                    <div id="preview" class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                            <h1 class="display-3">Ожидание игроков</h1>
+                            <div class="alert alert-success" role="alert">
+                                <h4 class="alert-heading">
+                                    Уже подключилось <span id="playersCount">0</span> игроков
+                                </h4>
+                            </div>
+                            <p class="lead">Нажмите на кнопку, чтобы начать игру с таким количеством игроков</p>
+                            <button type="button" class="btn btn-primary btn-lg" id="startGameButton">Начать игру</button>
                         </div>
-                    </form>
+                    </div>
+                </div>
+                <div class="col-3" id="chat">
+                    <div class="card" id="messages">
+                        <div class="card-header">
+                            События
+                        </div>
+                        <div class="list-group list-group-flush" id="messagesList"></div>
+                    </div>
+                    <!--<form action="" method="post" class="card">-->
+                        <!--<div class="card-body" ></div>-->
+                        <!--<div class="input-group panel-footer">-->
+                            <!--<input type="text" class="form-control" placeholder="Сообщение">-->
+                            <!--<span class="input-group-btn">-->
+                                <!--<button class="btn btn-primary">Отправить</button>-->
+                            <!--</span>-->
+                        <!--</div>-->
+                    <!--</form>-->
                 </div>
             </div>
         </main>
@@ -43,6 +60,11 @@
         </footer>
 
     </div> <!-- /container -->
+
+    <script type="text/html" id="messageTemplate">
+        <div class="list-group-item"></div>    
+    </script>
+    
     <script src="dist/vendor.min.js"></script>
     <script src="dist/main.min.js"></script>
 </body>
