@@ -23,6 +23,7 @@ export default class Game extends MK.Object {
                 ['session.first_name', 'session.last_name'],
                 (fn, ln) => fn ? `${fn} ${ln}` : 'Загрузка...'
             )
+            .calc('login', ['session.domain', 'session.uid'], (domain, uid) => domain ? domain : `id${uid}`)
             .bindNode('fullUserName', ':sandbox #username', MK.binders.text())
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
             .instantiate('preview', Preview)
@@ -34,6 +35,7 @@ export default class Game extends MK.Object {
     init(session) {
         this.session = session;
         this.isHide = false;   
+        setTimeout(() => this.ws.connect().then(() => this.ws.send('login', {username: this.login})));
     }
     start() {
         this.preview.hide();

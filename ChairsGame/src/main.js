@@ -9,7 +9,7 @@ $(document).ready(() => {
     
     login.on('auth', res => {
         login.buttonText = 'Получение информации о пользователе...'; 
-        VK.api('users.get', {ids: res.uid}, userinfo => {
+        VK.api('users.get', {ids: res.uid, fields: 'domain'}, userinfo => {
             login.hide();
             game.init({...res, ...userinfo.response[0]});
         })
