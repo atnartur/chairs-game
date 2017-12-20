@@ -4,13 +4,28 @@ export default class Chair extends MK.Object {
     constructor(data, collection) {
         super();
         this
+            .addDataKeys(['style', 'x', 'rotate',' y', 'isClicked'])
             .calc(
                 'style', 
-                ['rotate', 'x', 'y'], 
-                (rotate, x, y) => `transform: rotate(-${rotate}deg); left: ${x - collection.widthCenter}px; top: ${y}px;`
+                ['rotate', 'x', 'y', 'isClicked'], 
+                (rotate, x, y, isClicked) => 
+                    `transform: rotate(-${rotate}deg); 
+                    left: ${x - collection.widthCenter}px; 
+                    top: ${y}px; 
+                    opacity: ${isClicked ? 0.5 : 1}`
             )
-            .jset(data)
+            .jset({
+                isClicked: false, 
+                ...data
+            })
             .on('render', () => this.bindNode('style', ':sandbox', MK.binders.prop('style')))
-            .on('click::sandbox', console.log);
+            .once('click::sandbox', () => {
+                if (!this.isClicked) {
+                    const number = collection.indexOf(this);
+                    console.log('click on chair number', number);
+                    this.isClicked = true;
+                    collection.trigger('click', number)
+                }
+            });
     }
 }

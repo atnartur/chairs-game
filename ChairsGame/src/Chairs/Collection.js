@@ -21,9 +21,6 @@ export default class Chairs extends MK.Array {
             })
             .bindNode('isHide', ':sandbox', MK.binders.display(false));
     }
-    show() {
-        this.isHide = false;
-    }
     setPositions(count) {
         let w = this.$nodes.sandbox[0].offsetWidth;
         let h = this.$nodes.sandbox[0].offsetHeight;

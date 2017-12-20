@@ -16,7 +16,4 @@ export default class Preview extends MK.Object {
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
             .on('click::startGameButton', () => parent.start());
     }
-    hide() {
-        this.isHide = true;
-    }
 }

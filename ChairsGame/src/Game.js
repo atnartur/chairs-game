@@ -12,7 +12,8 @@ export default class Game extends MK.Object {
                 session: {},
                 ws: {},
                 isHide: true,
-                messages: ['Сообщение', 222]
+                messages: ['Сообщение', 222],
+                showFinal: false
             })
             .bindNode({
                 sandbox: '#game',
@@ -26,6 +27,7 @@ export default class Game extends MK.Object {
             .calc('login', ['session.domain', 'session.uid'], (domain, uid) => domain ? domain : `id${uid}`)
             .bindNode('fullUserName', ':sandbox #username', MK.binders.text())
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
+            .bindNode('showFinal', ':sandbox #final', MK.binders.display())
             .instantiate('preview', Preview)
             .instantiate('messages', Messages)
             .instantiate('ws', Ws)
@@ -38,8 +40,13 @@ export default class Game extends MK.Object {
         setTimeout(() => this.ws.connect().then(() => this.ws.send('login', {username: this.login})));
     }
     start() {
-        this.preview.hide();
-        this.chairs.show();
+        this.preview.isHide = true;
+        this.chairs.isHide = false;
         setTimeout(() => this.chairs.setPositions(5));
+        this.chairs.on('click', (number) => {
+            console.log(number);
+            this.chairs.isHide = true;
+            this.showFinal = true;
+        })
     }
 }
