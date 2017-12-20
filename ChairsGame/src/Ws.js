@@ -8,6 +8,7 @@ export default class Ws extends MK.Object {
     connect() {
         this.conn = new WebSocket(`ws://${location.host}/ws`);
         const self = this;
+        window.ws = this;
         this.conn.onopen = function() {
             self.trigger('open');
         };
