@@ -40,6 +40,6 @@ export default class Game extends MK.Object {
     start() {
         this.preview.hide();
         this.chairs.show();
-        this.chairs.setPositions(5);
+        setTimeout(() => this.chairs.setPositions(5));
     }
 }

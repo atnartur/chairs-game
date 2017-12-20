@@ -25,10 +25,8 @@ export default class Chairs extends MK.Array {
         this.isHide = false;
     }
     setPositions(count) {
-        let $elem = $(this.$nodes.sandbox);
-        console.log($elem);
-        let w = $elem.width();
-        let h = $elem.height();
+        let w = this.$nodes.sandbox[0].offsetWidth;
+        let h = this.$nodes.sandbox[0].offsetHeight;
         let xStart = w / 2;
         let yStart = h / 2;
 
@@ -36,24 +34,25 @@ export default class Chairs extends MK.Array {
 
         this.widthCenter = Math.round(w / 2);
         this.heightCenter = Math.round(h / 2);
-        console.log(w,  h,  this.widthCenter, this.heightCenter);
+        
         let r = 0;
         
         if (count !== 1)
-            r = w / Math.round(2*Math.sin(Math.PI / count)) + this.heightCenter / 2;
+            r =  this.heightCenter / 2;
 
         for (let i = count-1; i >= 0; i--) {
             let a = i * (2 * Math.PI / count);
             let y = Math.round((Math.cos(a) * r + yStart));
-            let x = Math.round((Math.sin(a) * r + xStart)) - this.widthCenter;
-            
+            let x = this.widthCenter + Math.round((Math.sin(a) * r + xStart));
             chairs.push({
                 rotate: (360 / count) * i, 
                 x, 
                 y
             });
         }
-        console.log(chairs);
+        
+        console.log('chairs', chairs);
+        
         this.recreate(chairs);
     }
 }
