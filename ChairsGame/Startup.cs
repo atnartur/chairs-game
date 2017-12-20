@@ -77,7 +77,7 @@ namespace ChairsGame
                 //If input frame is cancelation frame, send close command.
                 if (webSocketReceiveResult.MessageType == WebSocketMessageType.Close)
                 {
-                    await global.RemoveSocket(global.GetId(webSocket));
+                    await global.RemoveSocket(global.GetUsername(webSocket));
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
                       String.Empty, cancellationToken);
                 }
@@ -90,14 +90,6 @@ namespace ChairsGame
                       System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
                     await global.RunCommandAsync(receiveString, webSocket);
                     
-                    //Converts string to byte array.
-//                    var newString =
-//                      String.Format("Hello, " + receiveString + " ! Time {0}", DateTime.Now.ToString());
-//                    Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(newString);
-//                    
-//                    //Sends data back.
-//                    await webSocket.SendAsync(new ArraySegment<byte>(bytes),
-//                      WebSocketMessageType.Text, true, cancellationToken);
                 }
             }
         }

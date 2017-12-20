@@ -10,6 +10,6 @@ namespace ChairsGame
     {
         public WebSocket Socket { get; set; }
         public string Username { get; set; }
-        public bool First { get; set; }
+        public bool IsFirst { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -13,48 +14,52 @@ namespace ChairsGame
     public class Global
     {
         public Game Game { get; set; }
-        private static ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
+        //private static ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
 
-        public WebSocket GetSocketById(string id)
+        public WebSocket GetSocketById(string username)
         {
-            return _sockets.FirstOrDefault(p => p.Key == id).Value;
+            return Game.users.FirstOrDefault(p => p.Username == username).Socket;
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAll()
+        public List<User> GetAll()
         {
-            return _sockets;
+            return Game.users;
         }
 
-        public string GetId(WebSocket socket)
+        public string GetUsername(WebSocket socket)
         {
-            return _sockets.FirstOrDefault(p => p.Value == socket).Key;
+            return Game.users.FirstOrDefault(p => p.Socket == socket).Username;
         }
 
         public async Task<string> AddSocketAsync(WebSocket socket, string username)
         {
             //var uN = CreateConnectionId();
             //var uN = username;
-            _sockets.TryAdd(username, socket);
+            //_sockets.TryAdd(username, socket);
 
             var f = Game.users.Count == 0 ? true : false;
 
-            Game.users.Add(new User
-            {
-                Username = username,
-                Socket = socket,
-                First = f
-            });
+            if (Game.users.FirstOrDefault(x => x.Username == username) == null)
+                Game.users.Add(new User
+                {
+                    Username = username,
+                    Socket = socket,
+                    IsFirst = f
+                });
 
             return username;
         }
 
         public async Task RemoveSocket(string id)
         {
-            _sockets.TryRemove(id, out WebSocket socket);
+            //_sockets.TryRemove(id, out WebSocket socket);
+            var user = Game.users.FirstOrDefault(x => x.Username == id);
+
+            var socket = user.Socket;
 
             var f = Game.users.Count == 1 ? true : false;
 
-            Game.users.Remove(Game.users.FirstOrDefault(x => x.Username == id));
+            Game.users.Remove(user);
 
             await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
                                     statusDescription: "Closed by the WebSocketManager",
@@ -63,10 +68,10 @@ namespace ChairsGame
 
         public async Task SendMessageToAllAsync<T>(Message<T> message) where T : ISendableMessage
         {
-            foreach (var pair in _sockets)
+            foreach (var socket in Game.users)
             {
-                if (pair.Value.State == WebSocketState.Open)
-                    await SendMessageAsync<T>(message, pair.Value);
+                if (socket.Socket.State == WebSocketState.Open)
+                    await SendMessageAsync<T>(message, socket.Socket);
             }
         }
 
@@ -91,12 +96,16 @@ namespace ChairsGame
 
         private async Task Run<T>(string message, WebSocket webSocket) where T : IRecievedMessage =>
             await JsonConvert.DeserializeObject<Message<T>>(message).Data.Run(this, webSocket);
-        
+
         public async Task RunCommandAsync(string message, WebSocket webSocket)
         {
             var decodedForName = JsonConvert.DeserializeObject<Message<object>>(message);
             if (decodedForName.Name == "login")
                 await Run<Login>(message, webSocket);
+            else if (decodedForName.Name == "startGame")
+                await Run<StartGame>(message, webSocket);
+            else if (decodedForName.Name == "click")
+                await Run<Click>(message, webSocket);
         }
     }
 }
