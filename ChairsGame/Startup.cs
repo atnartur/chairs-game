@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
+using ChairsGame.Data;
 
 namespace ChairsGame
 {
@@ -87,18 +88,16 @@ namespace ChairsGame
                     //Because we know that is a string, we convert it.
                     string receiveString =
                       System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
-
-                    var message = JsonConvert.DeserializeObject<Message>(receiveString);
-
-                    await global.RunCommandAsync(message, webSocket);
-                    //Converts string to byte array.
-                    var newString =
-                      String.Format("Hello, " + receiveString + " ! Time {0}", DateTime.Now.ToString());
-                    Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(newString);
+                    await global.RunCommandAsync(receiveString, webSocket);
                     
-                    //Sends data back.
-                    await webSocket.SendAsync(new ArraySegment<byte>(bytes),
-                      WebSocketMessageType.Text, true, cancellationToken);
+                    //Converts string to byte array.
+//                    var newString =
+//                      String.Format("Hello, " + receiveString + " ! Time {0}", DateTime.Now.ToString());
+//                    Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(newString);
+//                    
+//                    //Sends data back.
+//                    await webSocket.SendAsync(new ArraySegment<byte>(bytes),
+//                      WebSocketMessageType.Text, true, cancellationToken);
                 }
             }
         }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace ChairsGame
 {
-    public class Message
+    public class Message<T>
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
-        public object Data { get; set; }
+        [JsonProperty("data")]
+        public T Data { get; set; }
     }
 }
