@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ChairsGame
 {
     public class Global
     {
-        Game Game = new Game();
+        Game Game;
         private static ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
 
         public WebSocket GetSocketById(string id)
@@ -30,9 +31,9 @@ namespace ChairsGame
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public async Task<string> AddSocketAsync(WebSocket socket)
+        public async Task<string> AddSocketAsync(WebSocket socket, string uN)
         {
-            var uN = CreateConnectionId();
+            //var uN = CreateConnectionId();
             //var uN = username;
             _sockets.TryAdd(uN, socket);
 
@@ -44,9 +45,6 @@ namespace ChairsGame
                 Socket = socket,
                 First = f
             });
-
-            await SendMessageToAllAsync("User" + uN + "connected");
-            await SendMessageToAllAsync(Game.users.Count.ToString());
 
             return uN;
         }
@@ -74,7 +72,7 @@ namespace ChairsGame
             return Guid.NewGuid().ToString();
         }
 
-        public async Task SendMessageToAllAsync(string message)
+        public async Task SendMessageToAllAsync(Message message)
         {
             foreach (var pair in _sockets)
             {
@@ -83,8 +81,10 @@ namespace ChairsGame
             }
         }
 
-        private async Task SendMessageAsync(WebSocket socket, string message)
+        private async Task SendMessageAsync(WebSocket socket, Message mes)
         {
+            var message = JsonConvert.SerializeObject(mes);
+
             if (socket.State != WebSocketState.Open)
                 return;
 
@@ -94,6 +94,51 @@ namespace ChairsGame
                                     messageType: WebSocketMessageType.Text,
                                     endOfMessage: true,
                                     cancellationToken: CancellationToken.None);
+        }
+        class LoginData
+        {
+            public string username { get; set; }
+        }
+        public async Task RunCommandAsync(Message message, WebSocket webSocket)
+        {
+            if (message.Name.ToLower() == "login")
+            {
+                var isFirst = false;
+                if (Game == null)
+                {
+                    Game = new Game();
+                    isFirst = true;
+                }
+                var username = "";
+                try
+                {
+                    var data = ((JValue)message.Data).ToObject<LoginData>();
+                    username = data.username;
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(                      e);
+                }
+                await AddSocketAsync(webSocket, username);
+
+                SendMessageToAllAsync(new Message()
+                {
+                    Name = "user_logged_in",
+                    Data = new { username }
+                });
+
+                SendMessageToAllAsync(new Message()
+                {
+                    Name = "user_logged_count",
+                    Data = new { count = Game.users.Count() }
+                });
+
+                SendMessageAsync(webSocket, new Message()
+                {
+                    Name = "user_is_first",
+                    Data = new { is_first = isFirst }
+                });
+            }
         }
     }
 }

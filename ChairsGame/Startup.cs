@@ -7,6 +7,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace ChairsGame
 {
@@ -60,19 +61,46 @@ namespace ChairsGame
 
         private async Task Echo(HttpContext context, WebSocket webSocket)
         {
-            await global.AddSocketAsync(webSocket);
+            //await global.AddSocketAsync(webSocket);
             var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            while (!result.CloseStatus.HasValue)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
+            var receivedDataBuffer = new ArraySegment<Byte>(new Byte[1024]);
 
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                Console.WriteLine(result);
-                //var message = JsonConvert.DeserializeObject<Message>(result);
+            var cancellationToken = new CancellationToken();
+
+            while (webSocket.State == WebSocketState.Open)
+            {
+                //Reads data.
+                WebSocketReceiveResult webSocketReceiveResult =
+                  await webSocket.ReceiveAsync(receivedDataBuffer, cancellationToken);
+                
+                //If input frame is cancelation frame, send close command.
+                if (webSocketReceiveResult.MessageType == WebSocketMessageType.Close)
+                {
+                    await global.RemoveSocket(global.GetId(webSocket));
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
+                      String.Empty, cancellationToken);
+                }
+                else
+                {
+                    byte[] payloadData = receivedDataBuffer.Array.Where(b => b != 0).ToArray();
+                    
+                    //Because we know that is a string, we convert it.
+                    string receiveString =
+                      System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
+
+                    var message = JsonConvert.DeserializeObject<Message>(receiveString);
+
+                    await global.RunCommandAsync(message, webSocket);
+                    //Converts string to byte array.
+                    var newString =
+                      String.Format("Hello, " + receiveString + " ! Time {0}", DateTime.Now.ToString());
+                    Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(newString);
+                    
+                    //Sends data back.
+                    await webSocket.SendAsync(new ArraySegment<byte>(bytes),
+                      WebSocketMessageType.Text, true, cancellationToken);
+                }
             }
-            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-            await global.RemoveSocket(global.GetId(webSocket));
         }
     }
 }
