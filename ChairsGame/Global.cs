@@ -6,6 +6,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ChairsGame
 {
@@ -29,7 +30,7 @@ namespace ChairsGame
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public string AddSocket(WebSocket socket)
+        public async Task<string> AddSocketAsync(WebSocket socket)
         {
             var uN = CreateConnectionId();
             //var uN = username;
@@ -44,22 +45,24 @@ namespace ChairsGame
                 First = f
             });
 
+            await SendMessageToAllAsync("User" + uN + "connected");
+            await SendMessageToAllAsync(Game.users.Count.ToString());
+
             return uN;
+        }
+
+        public void Parse(WebSocketReceiveResult json)
+        {
+            //JsonSerializer.
         }
 
         public async Task RemoveSocket(string id)
         {
-            WebSocket socket;
-            _sockets.TryRemove(id, out socket);
+            _sockets.TryRemove(id, out WebSocket socket);
 
             var f = Game.users.Count == 1 ? true : false;
 
-            Game.users.Remove(new User
-            {
-                Username = id,
-                Socket = _sockets[id],
-                First = f
-            });
+            Game.users.Remove(Game.users.FirstOrDefault(x => x.Username == id));
 
             await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
                                     statusDescription: "Closed by the WebSocketManager",

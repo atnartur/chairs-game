@@ -6,6 +6,7 @@ using System;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ChairsGame
 {
@@ -42,7 +43,6 @@ namespace ChairsGame
                     if (context.WebSockets.IsWebSocketRequest)
                     {
                         WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                        global.AddSocket(webSocket);
                         await Echo(context, webSocket);
                     }
                     else
@@ -60,6 +60,7 @@ namespace ChairsGame
 
         private async Task Echo(HttpContext context, WebSocket webSocket)
         {
+            await global.AddSocketAsync(webSocket);
             var buffer = new byte[1024 * 4];
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             while (!result.CloseStatus.HasValue)
@@ -67,6 +68,8 @@ namespace ChairsGame
                 await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
 
                 result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                Console.WriteLine(result);
+                //var message = JsonConvert.DeserializeObject<Message>(result);
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             await global.RemoveSocket(global.GetId(webSocket));
