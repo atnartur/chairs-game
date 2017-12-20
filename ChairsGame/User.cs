@@ -11,5 +11,7 @@ namespace ChairsGame
         public WebSocket Socket { get; set; }
         public string Username { get; set; }
         public bool IsFirst { get; set; }
+        public bool IsKicked { get; set; }
+        public bool IsClicked { get; set; }
     }
 }
