@@ -10,6 +10,7 @@ export default class Chair extends MK.Object {
                 (rotate, x, y) => `transform: rotate(-${rotate}deg); left: ${x - collection.widthCenter}px; top: ${y}px;`
             )
             .jset(data)
-            .on('render', () => this.bindNode('style', ':sandbox', MK.binders.prop('style')));
+            .on('render', () => this.bindNode('style', ':sandbox', MK.binders.prop('style')))
+            .on('click::sandbox', console.log);
     }
 }
