@@ -6,7 +6,8 @@ export default class Preview extends MK.Object {
         this
             .jset({
                 playersCount: 0,
-                isHide: false
+                isHide: false,
+                isStartButtonHide: true
             })
             .bindNode({
                 sandbox: '#preview',
@@ -14,6 +15,7 @@ export default class Preview extends MK.Object {
                 startGameButton: ':sandbox #startGameButton'
             })
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
+            .bindNode('isStartButtonHide', ':sandbox #startGameButton', MK.binders.display(false))
             .on('click::startGameButton', () => parent.start());
     }
 }

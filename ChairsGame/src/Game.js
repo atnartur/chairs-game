@@ -3,6 +3,7 @@ import Preview from './Preview';
 import Messages from './Messages/Collection';
 import Ws from './Ws';
 import Chairs from './Chairs/Collection'
+import Handlers from "./Handlers";
 
 export default class Game extends MK.Object {
     constructor() {
@@ -12,7 +13,7 @@ export default class Game extends MK.Object {
                 session: {},
                 ws: {},
                 isHide: true,
-                messages: ['Сообщение', 222],
+                messages: [],
                 showFinal: false
             })
             .bindNode({
@@ -38,15 +39,16 @@ export default class Game extends MK.Object {
         this.session = session;
         this.isHide = false;   
         setTimeout(() => this.ws.connect().then(() => this.ws.send('login', {username: this.login})));
+        new Handlers(this);
     }
     start() {
         this.preview.isHide = true;
         this.chairs.isHide = false;
-        setTimeout(() => this.chairs.setPositions(5));
-        this.chairs.on('click', (number) => {
-            console.log(number);
-            this.chairs.isHide = true;
-            this.showFinal = true;
-        })
+        // setTimeout(() => this.chairs.setPositions(5));
+        // this.chairs.on('click', (number) => {
+        //     console.log(number);
+        //     this.chairs.isHide = true;
+        //     this.showFinal = true;
+        // })
     }
 }

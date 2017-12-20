@@ -17,6 +17,9 @@ export default class Ws extends MK.Object {
         };
         this.conn.onmessage = function(e) {
             self.trigger('message', e);
+            const json = JSON.parse(e.data);
+            console.log(json.name, json.data);
+            self.trigger(json.name, json.data);
         };
         this.conn.onerror = function(e) {
             self.trigger('error', e);
