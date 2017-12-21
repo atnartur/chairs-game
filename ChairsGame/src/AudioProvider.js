@@ -4,7 +4,7 @@ function getRandomInt(min, max) {
 
 export default class AudioProvider {
     constructor() {
-        this.tracks = [0, 1, 2].map(x => new Audio(`/audio/${x}.mp3`));
+        this.tracks = [0, 1, 2, 3].map(x => new Audio(`/audio/${x}.mp3`));
         this.current = 0;
     }
     play() {
