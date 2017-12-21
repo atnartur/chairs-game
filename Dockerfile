@@ -10,7 +10,7 @@ COPY ./ChairsGame.sln .
 RUN dotnet restore ./ChairsGame.sln
 COPY . .
 
-WORKDIR /app/ChairsGame/wwwroot
+WORKDIR /app/ChairsGame
 RUN npm i -q && node ./node_modules/gulp/bin/gulp.js
 
 WORKDIR /app
