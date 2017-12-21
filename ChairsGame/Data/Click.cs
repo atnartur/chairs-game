@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ChairsGame.Data
 {
-    public class Click : ISendableMessage
+    public class Click : ISendableMessage, IRecievedMessage
     {
         [JsonProperty("numberOfChair")]
         public string NumberOfChair { get; set; }
@@ -35,19 +33,19 @@ namespace ChairsGame.Data
                 user.IsKicked = true;
             }
 
-            if (global.Game.users.Where(x => x.IsClicked == true && x.IsKicked == false).Count() == 1)
+            if (global.Game.users.Count(x => x.IsClicked && !x.IsKicked) == 1)
                 await global.SendMessageAsync(new Message<ClickedOnChair>()
                 {
                     Name = "win",
                     Data = null
-                }, global.Game.users.FirstOrDefault(x => x.IsClicked == true && x.IsKicked == false).Socket);
+                }, global.Game.users.FirstOrDefault(x => x.IsClicked && !x.IsKicked).Socket);
             else
                 await global.SendMessageToAllAsync(new Message<StartGameEntity>()
                 {
                     Name = "startGame",
                     Data = new StartGameEntity()
                     {
-                        CountOfChairs = global.Game.users.Where(x => x.IsKicked == false).Count()
+                        CountOfChairs = global.Game.users.Count(x => !x.IsKicked)
                     }
                 });
         }

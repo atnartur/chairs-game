@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -56,10 +55,9 @@ namespace ChairsGame
             var user = Game.users.FirstOrDefault(x => x.Username == id);
 
             var socket = user.Socket;
-
-            var f = Game.users.Count == 1 ? true : false;
-
             Game.users.Remove(user);
+
+            Login.SendCountsAndIsFirstToAll(this);
 
             await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
                                     statusDescription: "Closed by the WebSocketManager",

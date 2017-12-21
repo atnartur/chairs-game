@@ -29,17 +29,24 @@ namespace ChairsGame.Data
                 }
             });
 
-            global.SendMessageToAllAsync(new Message<UserLoggedCount>()
-            {
-                Name = "user_logged_count",
-                Data = new UserLoggedCount() { Count = global.Game.users.Count }
-            });
+            SendCountsAndIsFirstToAll(global);
+        }
 
-            global.SendMessageAsync(new Message<UserIsFirst>()
+        public static void SendCountsAndIsFirstToAll(Global global)
+        {
+            if (global.Game.users.Count > 0)
             {
-                Name = "user_is_first",
-                Data = new UserIsFirst(){ IsFirst = isFirst }
-            }, webSocket);
+                global.SendMessageToAllAsync(new Message<UserLoggedCount>
+                {
+                    Name = "user_logged_count",
+                    Data = new UserLoggedCount() {Count = global.Game.users.Count}
+                });
+                global.SendMessageAsync(new Message<UserIsFirst>
+                {
+                    Name = "user_is_first",
+                    Data = new UserIsFirst() {IsFirst = true}
+                }, global.Game.users[0].Socket);
+            }
         }
     }
 }

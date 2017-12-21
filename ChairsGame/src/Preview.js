@@ -11,11 +11,11 @@ export default class Preview extends MK.Object {
             })
             .bindNode({
                 sandbox: '#preview',
-                playersCount: ':sandbox #playersCount',
                 startGameButton: ':sandbox #startGameButton'
             })
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
             .bindNode('isStartButtonHide', ':sandbox #startGameButton', MK.binders.display(false))
+            .bindNode('playersCount', ':sandbox #playersCount', MK.binders.text())
             .on('click::startGameButton', () => parent.start());
     }
 }

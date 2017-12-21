@@ -6,9 +6,7 @@ using System;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Linq;
-using ChairsGame.Data;
 
 namespace ChairsGame
 {
@@ -63,7 +61,6 @@ namespace ChairsGame
         private async Task Echo(HttpContext context, WebSocket webSocket)
         {
             //await global.AddSocketAsync(webSocket);
-            var buffer = new byte[1024 * 4];
             var receivedDataBuffer = new ArraySegment<Byte>(new Byte[1024]);
 
             var cancellationToken = new CancellationToken();

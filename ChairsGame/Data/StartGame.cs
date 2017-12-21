@@ -20,7 +20,7 @@ namespace ChairsGame.Data
                 Name = "startGame",
                 Data = new StartGameEntity()
                 {
-                    CountOfChairs = global.Game.users.Where(x => x.IsKicked == false).Count()
+                    CountOfChairs = global.Game.users.Count(x => !x.IsKicked)
                 }
             });
 

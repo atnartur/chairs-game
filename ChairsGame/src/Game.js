@@ -44,6 +44,7 @@ export default class Game extends MK.Object {
     start() {
         this.preview.isHide = true;
         this.chairs.isHide = false;
+        this.ws.send('startGame');
         // setTimeout(() => this.chairs.setPositions(5));
         // this.chairs.on('click', (number) => {
         //     console.log(number);
