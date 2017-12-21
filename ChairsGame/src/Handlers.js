@@ -10,8 +10,8 @@ export default class Handlers {
             user_logged_in: data => game.messages.push(`${data.username} вошел(а)`),
             user_is_first: data => this.isFirst = data.is_first,
             close: () => {
-                alert('Произошла ошибка подключения. Игра будет перезапущена');
-                location.reload();
+                if (confirm('Произошла ошибка подключения. Перезапустить игру?'))
+                    location.reload();
             }
         });
     }

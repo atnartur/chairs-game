@@ -98,7 +98,6 @@ namespace ChairsGame
                 await JsonConvert.DeserializeObject<Message<T>>(message).Data.Run(this, webSocket);
             else
                 await new StartGame().Run(this, webSocket);
-
         }
 
         public async Task RunCommandAsync(string message, WebSocket webSocket)
