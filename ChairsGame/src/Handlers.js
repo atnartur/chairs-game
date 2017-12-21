@@ -18,6 +18,7 @@ export default class Handlers {
             user_logged_in: data => game.messages.push(`${data.username} вошел(а)`),
             user_is_first: data => this.isFirst = data.is_first,
             startGame: data => {
+                clickedOnChair = false
                 game.preview.isHide = true;
                 game.audio.play();
                 game.chairs.isHide = false;
@@ -42,6 +43,7 @@ export default class Handlers {
         game.chairs.on('click', numberOfChair => {
             if (!clickedOnChair) {
                 ws.send('click', {numberOfChair});
+                game.chairs[numberOfChair].isClicked = true;
                 clickedOnChair = true;
             }
         });

@@ -22,8 +22,6 @@ export default class Chair extends MK.Object {
             .once('click::sandbox', () => {
                 if (!this.isClicked) {
                     const number = collection.indexOf(this);
-                    console.log('click on chair number', number);
-                    this.isClicked = true;
                     collection.trigger('click', number)
                 }
             });

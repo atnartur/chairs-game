@@ -55,10 +55,7 @@ namespace ChairsGame
 
         private async Task Echo(HttpContext context, WebSocket webSocket)
         {
-            //await global.AddSocketAsync(webSocket);
-
             var cancellationToken = new CancellationToken();
-
             while (webSocket.State == WebSocketState.Open)
             {
                 var receivedDataBuffer = new ArraySegment<Byte>(new Byte[1024]);
@@ -69,8 +66,7 @@ namespace ChairsGame
                 if (webSocketReceiveResult.MessageType == WebSocketMessageType.Close)
                 {
                     await global.RemoveSocket(global.GetUsername(webSocket));
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
-                      String.Empty, cancellationToken);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, String.Empty, cancellationToken);
                 }
                 else
                 {
