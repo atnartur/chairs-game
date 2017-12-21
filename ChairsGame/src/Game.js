@@ -45,11 +45,5 @@ export default class Game extends MK.Object {
     }
     start() {
         this.ws.send('startGame');
-        // setTimeout(() => this.chairs.setPositions(5));
-        // this.chairs.on('click', (number) => {
-        //     console.log(number);
-        //     this.chairs.isHide = true;
-        //     this.showFinal = true;
-        // })
     }
 }
