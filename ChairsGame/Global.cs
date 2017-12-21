@@ -92,18 +92,31 @@ namespace ChairsGame
             );
         }
 
-        private async Task Run<T>(string message, WebSocket webSocket) where T : IRecievedMessage =>
-            await JsonConvert.DeserializeObject<Message<T>>(message).Data.Run(this, webSocket);
+        private async Task Run<T>(string message, WebSocket webSocket) where T : IRecievedMessage
+        {
+            if (message.Contains("{"))
+                await JsonConvert.DeserializeObject<Message<T>>(message).Data.Run(this, webSocket);
+            else
+                await new StartGame().Run(this, webSocket);
+
+        }
 
         public async Task RunCommandAsync(string message, WebSocket webSocket)
         {
-            var decodedForName = JsonConvert.DeserializeObject<Message<object>>(message);
-            if (decodedForName.Name == "login")
-                await Run<Login>(message, webSocket);
-            else if (decodedForName.Name == "startGame")
-                await Run<StartGame>(message, webSocket);
-            else if (decodedForName.Name == "click")
-                await Run<Click>(message, webSocket);
+            try
+            {
+                var decodedForName = JsonConvert.DeserializeObject<Message<object>>(message);
+                if (decodedForName.Name == "login")
+                    await Run<Login>(message, webSocket);
+                else if (decodedForName.Name == "click")
+                    await Run<Click>(message, webSocket);
+            }
+            catch (JsonReaderException)
+            {
+                var decodedForName = JsonConvert.DeserializeObject<ParameterlessMessage>(message);
+                if (decodedForName.Name == "startGame")
+                    await Run<StartGame>("startGame", webSocket);
+            }
         }
     }
 }
