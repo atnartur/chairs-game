@@ -4,6 +4,7 @@ import Messages from './Messages/Collection';
 import Ws from './Ws';
 import Chairs from './Chairs/Collection'
 import Handlers from "./Handlers";
+import AudioProvider from './AudioProvider';
 
 export default class Game extends MK.Object {
     constructor() {
@@ -32,7 +33,8 @@ export default class Game extends MK.Object {
             .instantiate('preview', Preview)
             .instantiate('messages', Messages)
             .instantiate('ws', Ws)
-            .instantiate('chairs', Chairs);
+            .instantiate('chairs', Chairs)
+            .instantiate('audio', AudioProvider);
         console.log('game', this);
     }
     init(session) {
@@ -42,8 +44,6 @@ export default class Game extends MK.Object {
         new Handlers(this);
     }
     start() {
-        this.preview.isHide = true;
-        this.chairs.isHide = false;
         this.ws.send('startGame');
         // setTimeout(() => this.chairs.setPositions(5));
         // this.chairs.on('click', (number) => {
