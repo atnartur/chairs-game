@@ -1,6 +1,7 @@
 export default class Handlers {
     constructor(game) {
         let clickedOnChair = false;
+        let musicStopped = false;
         
         function finish() {
             game.chairs.isHide = true;
@@ -24,7 +25,10 @@ export default class Handlers {
                 game.chairs.isHide = false;
                 setTimeout(() => game.chairs.setPositions(data.countOfChairs));
             },
-            musicStop: () => game.audio.stop(),
+            musicStop: () => {
+                game.audio.stop()
+                musicStopped = true
+            },
             clickedOnChair: data => game.chairs[data.numberOfChair].isClicked = true,
             kick: () => {
                 alert('Вы проиграли!');
@@ -41,7 +45,7 @@ export default class Handlers {
         });
         
         game.chairs.on('click', numberOfChair => {
-            if (!clickedOnChair) {
+            if (!clickedOnChair && musicStopped) {
                 ws.send('click', {numberOfChair});
                 game.chairs[numberOfChair].isClicked = true;
                 clickedOnChair = true;
