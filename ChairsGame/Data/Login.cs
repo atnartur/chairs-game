@@ -14,7 +14,7 @@ namespace ChairsGame.Data
             if (global.Game == null)
                 global.Game = new Game();
 
-            await global.AddSocketAsync(webSocket, Username);
+            global.AddSocketAsync(webSocket, Username);
 
             await global.SendMessageToAllAsync(new Message<UserLoggedIn>()
             {

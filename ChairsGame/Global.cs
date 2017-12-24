@@ -13,49 +13,20 @@ namespace ChairsGame
     public class Global
     {
         public Game Game { get; set; }
-        //private static ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
+ 
+        public string GetSocketByUsername(WebSocket socket) => 
+            Game.users.FirstOrDefault(p => p.Socket == socket).Username;
 
-        public WebSocket GetSocketById(string username)
+        public string AddSocketAsync(WebSocket socket, string username)
         {
-            return Game.users.FirstOrDefault(p => p.Username == username).Socket;
-        }
-
-        public List<User> GetAll()
-        {
-            return Game.users;
-        }
-
-        public string GetUsername(WebSocket socket)
-        {
-            return Game.users.FirstOrDefault(p => p.Socket == socket).Username;
-        }
-
-        public async Task<string> AddSocketAsync(WebSocket socket, string username)
-        {
-            if (!Game.IsStart)
-            {
-                var f = Game.users.Count == 0 ? true : false;
-
-                if (Game.users.FirstOrDefault(x => x.Username == username) == null)
-                    Game.users.Add(new User
-                    {
-                        Username = username,
-                        Socket = socket,
-                        IsFirst = f
-                    });
-            }
-            else
-            {
-                var f = Game.queue.Count == 0 ? true : false;
-
-                if (Game.queue.FirstOrDefault(x => x.Username == username) == null)
-                    Game.queue.Add(new User
-                    {
-                        Username = username,
-                        Socket = socket,
-                        IsFirst = f
-                    });
-            }
+            var collectionForAdding = !Game.IsStart ? Game.users : Game.queue;
+            if (collectionForAdding.FirstOrDefault(x => x.Username == username) == null)
+                collectionForAdding.Add(new User
+                {
+                    Username = username,
+                    Socket = socket,
+                    IsFirst = Game.users.Count == 0
+                });
 
             return username;
         }

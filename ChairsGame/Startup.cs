@@ -65,7 +65,7 @@ namespace ChairsGame
                 //If input frame is cancelation frame, send close command.
                 if (webSocketReceiveResult.MessageType == WebSocketMessageType.Close)
                 {
-                    await global.RemoveUsers(new [] {global.GetUsername(webSocket)});
+                    await global.RemoveUsers(new [] {global.GetSocketByUsername(webSocket)});
 //                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, String.Empty, cancellationToken);
                 }
                 else

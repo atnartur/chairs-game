@@ -47,6 +47,7 @@ namespace ChairsGame.Data
 
                     await global.RemoveUsers(global.Game.users.Select(x => x.Username).ToArray());
                     global.Game.users.Clear();
+                    global.Game.IsStart = false;
                     global.Game.queue.ForEach(x => global.Game.users.Add(x));
                     global.Game.queue.Clear();
 
