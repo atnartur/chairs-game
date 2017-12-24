@@ -60,20 +60,41 @@ namespace ChairsGame
             return username;
         }
 
-        public async Task RemoveSocket(string username)
+        public async Task CloseSocket(WebSocket socket)
+        {
+            await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
+                statusDescription: "Closed by the WebSocketManager",
+                cancellationToken: CancellationToken.None);
+        }
+
+        public async Task RemoveUsers(string[] usernames)
+        {
+            foreach (var username in usernames)
+            {
+                var user = Game.users.FirstOrDefault(x => x.Username == username);
+                var socket = user.Socket;
+                await CloseSocket(socket);
+            }
+            foreach (var username in usernames)
+            {
+                var user = Game.users.FirstOrDefault(x => x.Username == username);
+                Game.users.Remove(user);
+            }
+            await Login.SendCountsAndIsFirstToAll(this);
+        }
+        
+        public async Task RemoveUser(string username)
         {
             var user = Game.users.FirstOrDefault(x => x.Username == username);
 
             var socket = user.Socket;
-            Game.users.Reverse();
+//            Game.users.Reverse();
             Game.users.Remove(user);
-            Game.users.Reverse();
+//            Game.users.Reverse();
 
-            Login.SendCountsAndIsFirstToAll(this);
+            await Login.SendCountsAndIsFirstToAll(this);
 
-            await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
-                                    statusDescription: "Closed by the WebSocketManager",
-                                    cancellationToken: CancellationToken.None);
+            await CloseSocket(socket);
         }
 
         public async Task SendMessageToAllAsync<T>(Message<T> message, List<User> list) where T : ISendableMessage

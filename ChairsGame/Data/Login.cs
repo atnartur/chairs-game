@@ -12,22 +12,17 @@ namespace ChairsGame.Data
         public async Task Run(Global global, WebSocket webSocket)
         {
             if (global.Game == null)
-            {
                 global.Game = new Game();
-            }
 
             await global.AddSocketAsync(webSocket, Username);
 
-            global.SendMessageToAllAsync(new Message<UserLoggedIn>()
+            await global.SendMessageToAllAsync(new Message<UserLoggedIn>()
             {
                 Name = "user_logged_in",
-                Data = new UserLoggedIn()
-                {
-                    Username = Username
-                }
+                Data = new UserLoggedIn(Username)
             }, global.Game.users);
 
-            SendCountsAndIsFirstToAll(global);
+            await SendCountsAndIsFirstToAll(global);
 
             if (global.Game.IsStart)
                 await global.SendMessageAsync(new Message<Nothing>()
@@ -37,20 +32,20 @@ namespace ChairsGame.Data
                 }, global.Game.queue.FirstOrDefault(x => x.Username == Username).Socket);
         }
 
-        public static void SendCountsAndIsFirstToAll(Global global)
+        public static async Task SendCountsAndIsFirstToAll(Global global)
         {
             if (global.Game.users.Count > 0)
             {
-                global.SendMessageToAllAsync(new Message<UserLoggedCount>
+                await global.SendMessageToAllAsync(new Message<UserLoggedCount>
                 {
                     Name = "user_logged_count",
-                    Data = new UserLoggedCount() { Count = global.Game.users.Count }
+                    Data = new UserLoggedCount(global.Game.users.Count)
                 }, global.Game.users);
 
-                global.SendMessageAsync(new Message<UserIsFirst>
+                await global.SendMessageAsync(new Message<UserIsFirst>
                 {
                     Name = "user_is_first",
-                    Data = new UserIsFirst() { IsFirst = true }
+                    Data = new UserIsFirst(true)
                 }, global.Game.users[0].Socket);
             }
         }

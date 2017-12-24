@@ -16,15 +16,8 @@ namespace ChairsGame.Data
             var timer = new Timer(1000);
             int timeLeft = rnd.Next(5, 15);
 
-            await global.SendMessageToAllAsync(new Message<StartGameEntity>()
-            {
-                Name = "startGame",
-                Data = new StartGameEntity()
-                {
-                    CountOfChairs = global.Game.users.Count(x => !x.IsKicked)
-                }
-            }, global.Game.users);
-
+            await Send(global);
+            
             timer.Start();
             timer.Elapsed += Timer_Elapsed;
 
@@ -41,9 +34,17 @@ namespace ChairsGame.Data
                 Name = "musicStop",
                 Data = null
             }, global.Game.users);
-
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e) => k++;
+
+        public static async Task Send(Global global)
+        {
+            await global.SendMessageToAllAsync(new Message<StartGameEntity>()
+            {
+                Name = "startGame",
+                Data = new StartGameEntity(global.Game.users.Count(x => !x.IsKicked) - 1)
+            }, global.Game.users);
+        }
     }
 }

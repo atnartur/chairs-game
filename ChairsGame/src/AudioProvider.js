@@ -9,7 +9,6 @@ export default class AudioProvider {
     }
     play() {
         this.current = getRandomInt(0, this.tracks.length);
-        this.tracks[this.current].volume = 0.01;
         this.tracks[this.current].play();
     }
     stop() {

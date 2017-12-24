@@ -45,54 +45,24 @@ namespace ChairsGame.Data
                         Data = null
                     }, global.Game.users.FirstOrDefault(x => x.IsClicked && !x.IsKicked).Socket);
 
-
-
-                    global.Game.users.ForEach(x => global.RemoveSocket(x.Username));
+                    await global.RemoveUsers(global.Game.users.Select(x => x.Username).ToArray());
                     global.Game.users.Clear();
                     global.Game.queue.ForEach(x => global.Game.users.Add(x));
                     global.Game.queue.Clear();
-                    
-                    global.Game.users.ForEach(x =>
+
+                    await global.Game.users.ForEachAsync(async x =>
                     {
-                        global.SendMessageToAllAsync(new Message<UserLoggedIn>()
+                        await global.SendMessageToAllAsync(new Message<UserLoggedIn>()
                         {
                             Name = "user_logged_in",
-                            Data = new UserLoggedIn()
-                            {
-                                Username = x.Username
-                            }
+                            Data = new UserLoggedIn(x.Username)
                         }, global.Game.users);
                     });
 
-                    SendCountsAndIsFirstToAll(global);
+                    await Login.SendCountsAndIsFirstToAll(global);
                 }
                 else
-                    await global.SendMessageToAllAsync(new Message<StartGameEntity>()
-                    {
-                        Name = "startGame",
-                        Data = new StartGameEntity()
-                        {
-                            CountOfChairs = global.Game.users.Count(x => !x.IsKicked)
-                        }
-                    }, global.Game.users);
-            }
-        }
-
-        public static void SendCountsAndIsFirstToAll(Global global)
-        {
-            if (global.Game.users.Count > 0)
-            {
-                global.SendMessageToAllAsync(new Message<UserLoggedCount>
-                {
-                    Name = "user_logged_count",
-                    Data = new UserLoggedCount() { Count = global.Game.users.Count }
-                }, global.Game.users);
-
-                global.SendMessageAsync(new Message<UserIsFirst>
-                {
-                    Name = "user_is_first",
-                    Data = new UserIsFirst() { IsFirst = true }
-                }, global.Game.users[0].Socket);
+                    await StartGame.Send(global);
             }
         }
     }
