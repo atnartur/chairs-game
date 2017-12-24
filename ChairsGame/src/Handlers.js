@@ -13,13 +13,20 @@ export default class Handlers {
         ws.on({
             user_logged_count: data => {
                 game.preview.playersCount = data.count;
-                if (game.preview.playersCount > 1 && this.isFirst)
+                
+                if (game.preview.playersCount > 1) 
+                    game.preview.text = 'Первый подключившийся игрок должен начать игру';
+                
+                if (game.preview.playersCount > 1 && this.isFirst) {
                     game.preview.isStartButtonHide = false;
+                    game.preview.text = 'Нажмите на кнопку, чтобы начать игру с таким количеством игроков'
+                }
             },
+            wait: data => game.preview.text = 'Ждем завершения другой игры', 
             user_logged_in: data => game.messages.push(`${data.username} вошел(а)`),
             user_is_first: data => this.isFirst = data.is_first,
             startGame: data => {
-                clickedOnChair = false
+                clickedOnChair = false;
                 game.preview.isHide = true;
                 game.audio.play();
                 game.chairs.isHide = false;
@@ -31,11 +38,11 @@ export default class Handlers {
             },
             clickedOnChair: data => game.chairs[data.numberOfChair].isClicked = true,
             kick: () => {
-                alert('Вы проиграли!');
+                game.finalText = 'Вы проиграли!';
                 finish();
             },
             win: () => {
-                alert('Вы выиграли!');
+                game.finalText = 'Вы выиграли!';
                 finish();
             },
             close: () => {

@@ -15,7 +15,8 @@ export default class Game extends MK.Object {
                 ws: {},
                 isHide: true,
                 messages: [],
-                showFinal: false
+                showFinal: false,
+                finalText: ''
             })
             .bindNode({
                 sandbox: '#game',
@@ -28,6 +29,7 @@ export default class Game extends MK.Object {
             )
             .calc('login', ['session.domain', 'session.uid'], (domain, uid) => domain ? domain : `id${uid}`)
             .bindNode('fullUserName', ':sandbox #username', MK.binders.text())
+            .bindNode('finalText', ':sandbox #finalText', MK.binders.text())
             .bindNode('isHide', ':sandbox', MK.binders.display(false))
             .bindNode('showFinal', ':sandbox #final', MK.binders.display())
             .instantiate('preview', Preview)

@@ -51,7 +51,7 @@ namespace ChairsGame.Data
                     global.Game.users.Clear();
                     global.Game.queue.ForEach(x => global.Game.users.Add(x));
                     global.Game.queue.Clear();
-
+                    
                     global.Game.users.ForEach(x =>
                     {
                         global.SendMessageToAllAsync(new Message<UserLoggedIn>()
