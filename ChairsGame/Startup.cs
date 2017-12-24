@@ -46,37 +46,27 @@ namespace ChairsGame
                         await Echo(context, webSocket);
                     }
                     else
-                    {
                         context.Response.StatusCode = 400;
-                    }
                 }
                 else
-                {
                     await next();
-                }
-
             });
         }
 
         private async Task Echo(HttpContext context, WebSocket webSocket)
         {
-            //await global.AddSocketAsync(webSocket);
-            var receivedDataBuffer = new ArraySegment<Byte>(new Byte[1024]);
-
             var cancellationToken = new CancellationToken();
-
             while (webSocket.State == WebSocketState.Open)
             {
+                var receivedDataBuffer = new ArraySegment<Byte>(new Byte[1024]);
                 //Reads data.
-                WebSocketReceiveResult webSocketReceiveResult =
-                  await webSocket.ReceiveAsync(receivedDataBuffer, cancellationToken);
+                var webSocketReceiveResult = await webSocket.ReceiveAsync(receivedDataBuffer, cancellationToken);
                 
                 //If input frame is cancelation frame, send close command.
                 if (webSocketReceiveResult.MessageType == WebSocketMessageType.Close)
                 {
                     await global.RemoveSocket(global.GetUsername(webSocket));
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
-                      String.Empty, cancellationToken);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, String.Empty, cancellationToken);
                 }
                 else
                 {
@@ -86,7 +76,6 @@ namespace ChairsGame
                     string receiveString =
                       System.Text.Encoding.UTF8.GetString(payloadData, 0, payloadData.Length);
                     await global.RunCommandAsync(receiveString, webSocket);
-                    
                 }
             }
         }

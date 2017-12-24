@@ -26,7 +26,7 @@ export default class Ws extends MK.Object {
         };
         return new Promise((resolve, reject) => this.once('open', resolve));
     }
-    send(name, data = {}) {
+    send(name, data = null) {
         const json = JSON.stringify({name, data});
         this.conn.send(json);
         console.log('sended', name,  data, json);

@@ -32,30 +32,42 @@ namespace ChairsGame
 
         public async Task<string> AddSocketAsync(WebSocket socket, string username)
         {
-            //var uN = CreateConnectionId();
-            //var uN = username;
-            //_sockets.TryAdd(username, socket);
+            if (!Game.IsStart)
+            {
+                var f = Game.users.Count == 0 ? true : false;
 
-            var f = Game.users.Count == 0 ? true : false;
+                if (Game.users.FirstOrDefault(x => x.Username == username) == null)
+                    Game.users.Add(new User
+                    {
+                        Username = username,
+                        Socket = socket,
+                        IsFirst = f
+                    });
+            }
+            else
+            {
+                var f = Game.queue.Count == 0 ? true : false;
 
-            if (Game.users.FirstOrDefault(x => x.Username == username) == null)
-                Game.users.Add(new User
-                {
-                    Username = username,
-                    Socket = socket,
-                    IsFirst = f
-                });
+                if (Game.queue.FirstOrDefault(x => x.Username == username) == null)
+                    Game.queue.Add(new User
+                    {
+                        Username = username,
+                        Socket = socket,
+                        IsFirst = f
+                    });
+            }
 
             return username;
         }
 
-        public async Task RemoveSocket(string id)
+        public async Task RemoveSocket(string username)
         {
-            //_sockets.TryRemove(id, out WebSocket socket);
-            var user = Game.users.FirstOrDefault(x => x.Username == id);
+            var user = Game.users.FirstOrDefault(x => x.Username == username);
 
             var socket = user.Socket;
+            Game.users.Reverse();
             Game.users.Remove(user);
+            Game.users.Reverse();
 
             Login.SendCountsAndIsFirstToAll(this);
 
@@ -64,9 +76,9 @@ namespace ChairsGame
                                     cancellationToken: CancellationToken.None);
         }
 
-        public async Task SendMessageToAllAsync<T>(Message<T> message) where T : ISendableMessage
+        public async Task SendMessageToAllAsync<T>(Message<T> message, List<User> list) where T : ISendableMessage
         {
-            foreach (var socket in Game.users)
+            foreach (var socket in list)
             {
                 if (socket.Socket.State == WebSocketState.Open)
                     await SendMessageAsync<T>(message, socket.Socket);

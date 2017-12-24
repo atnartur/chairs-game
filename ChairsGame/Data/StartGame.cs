@@ -11,6 +11,7 @@ namespace ChairsGame.Data
         int k;
         public async Task Run(Global global, WebSocket webSocket)
         {
+            global.Game.IsStart = true;
             var rnd = new Random();
             var timer = new Timer(1000);
             int timeLeft = rnd.Next(5, 15);
@@ -22,7 +23,7 @@ namespace ChairsGame.Data
                 {
                     CountOfChairs = global.Game.users.Count(x => !x.IsKicked)
                 }
-            });
+            }, global.Game.users);
 
             timer.Start();
             timer.Elapsed += Timer_Elapsed;
@@ -35,11 +36,11 @@ namespace ChairsGame.Data
                     break;
                 }
 
-            await global.SendMessageToAllAsync(new Message<StartGameEntity>()
+            await global.SendMessageToAllAsync(new Message<Nothing>()
             {
                 Name = "musicStop",
                 Data = null
-            });
+            }, global.Game.users);
 
         }
 
