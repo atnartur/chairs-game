@@ -29,11 +29,11 @@ namespace ChairsGame.Data
 
             SendCountsAndIsFirstToAll(global);
 
-            await global.SendMessageToAllAsync(new Message<Nothing>()
+            await global.SendMessageAsync(new Message<Nothing>()
             {
                 Name = "wait",
                 Data = null
-            }, global.Game.queue);
+            }, global.Game.queue.FirstOrDefault(x=>x.Username==Username).Socket);
         }
 
         public static void SendCountsAndIsFirstToAll(Global global)
