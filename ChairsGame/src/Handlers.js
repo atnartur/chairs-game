@@ -2,8 +2,10 @@ export default class Handlers {
     constructor(game) {
         let clickedOnChair = false;
         let musicStopped = false;
+        let gameFinished = false;
         
         function finish() {
+            gameFinished = true;
             game.chairs.isHide = true;
             game.showFinal = true;
         }
@@ -46,7 +48,7 @@ export default class Handlers {
                 finish();
             },
             close: () => {
-                if (confirm('Произошла ошибка подключения. Перезапустить игру?'))
+                if (!gameFinished && confirm('Произошла ошибка подключения. Перезапустить игру?'))
                     location.reload();
             }
         });
