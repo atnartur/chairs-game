@@ -1,6 +1,10 @@
 export default class Handlers {
     constructor(game) {
         let clickedOnChair = false;
+<<<<<<< HEAD
+=======
+        let musicStopped = false;
+>>>>>>> ee72dea2d3ca72832ea05c0407b505437ab29101
         
         function finish() {
             game.chairs.isHide = true;
@@ -24,7 +28,14 @@ export default class Handlers {
                 game.chairs.isHide = false;
                 setTimeout(() => game.chairs.setPositions(data.countOfChairs));
             },
+<<<<<<< HEAD
             musicStop: () => game.audio.stop(),
+=======
+            musicStop: () => {
+                game.audio.stop()
+                musicStopped = true
+            },
+>>>>>>> ee72dea2d3ca72832ea05c0407b505437ab29101
             clickedOnChair: data => game.chairs[data.numberOfChair].isClicked = true,
             kick: () => {
                 alert('Вы проиграли!');
@@ -41,7 +52,11 @@ export default class Handlers {
         });
         
         game.chairs.on('click', numberOfChair => {
+<<<<<<< HEAD
             if (!clickedOnChair) {
+=======
+            if (!clickedOnChair && musicStopped) {
+>>>>>>> ee72dea2d3ca72832ea05c0407b505437ab29101
                 ws.send('click', {numberOfChair});
                 game.chairs[numberOfChair].isClicked = true;
                 clickedOnChair = true;
