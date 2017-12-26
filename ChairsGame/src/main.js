@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Login from './login';
+import Login from './Login';
 import Game from './Game';
 import './style.less';
 
