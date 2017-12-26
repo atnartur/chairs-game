@@ -6,4 +6,13 @@ services:
     build:
       context: .
     ports:
-      - 80:5000
+      - 5000
+    networks:
+      - web
+    environment:
+      VIRTUAL_HOST: chairs.atnartur.ru
+
+networks:
+  web:
+    external:
+      name: web
