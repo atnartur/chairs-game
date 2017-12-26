@@ -10,10 +10,9 @@ COPY ./ChairsGame.sln .
 RUN dotnet restore ./ChairsGame.sln
 COPY . .
 
-WORKDIR /app/ChairsGame
-RUN npm i -q && node ./node_modules/gulp/bin/gulp.js -e production
-
-WORKDIR /app
+RUN cd ChairsGame && \
+	npm i -q && node ./node_modules/gulp/bin/gulp.js -e production && \
+	cd ..
 
 RUN dotnet build ./ChairsGame.sln -o ./build
 
